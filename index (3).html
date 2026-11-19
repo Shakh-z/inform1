@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Информатика · Архитектура · ПО — семинар</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f3ef;--ink:#0b0b0b;--mut:#6b6b66;--acc:#1536d6;--line:#d4d4ce}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,Helvetica,Arial,"Microsoft YaHei UI",sans-serif;font-weight:300}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.deck{position:fixed;inset:0;z-index:1}
+.slide{position:absolute;inset:0;padding:9vh 6vw 12vh;display:flex;flex-direction:column;justify-content:center;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .5s}
+.slide.on{opacity:1;visibility:visible;pointer-events:auto}
+.slide>*{max-width:min(54vw,720px);transform:translateY(18px);opacity:0;transition:.7s cubic-bezier(.2,.7,.2,1)}
+.slide.on>*{transform:none;opacity:1}
+.slide.on>*:nth-child(2){transition-delay:.08s}.slide.on>*:nth-child(3){transition-delay:.16s}.slide.on>*:nth-child(4){transition-delay:.24s}.slide.on>*:nth-child(5){transition-delay:.32s}
+.k{font:500 12px "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:2.2vh}
+h1{font-weight:200;font-size:min(9vw,15vh);line-height:.95;letter-spacing:-.04em}
+h2{font-weight:200;font-size:min(5.2vw,9vh);line-height:1.02;letter-spacing:-.035em;margin-bottom:3vh}
+h1 em,h2 em{font-style:normal;color:var(--acc)}
+p{font-size:min(1.35vw,2.4vh);line-height:1.5;font-weight:400;color:#2a2a28;margin-bottom:1.6vh}
+p.lead{font-size:min(1.8vw,3vh);font-weight:300}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--ink);margin-top:2vh}
+.grid.g3{grid-template-columns:repeat(3,1fr)}
+.cell{padding:1.6vh 1vw 1.6vh 0;border-bottom:1px solid var(--line)}
+.cell b{display:block;font-weight:500;font-size:min(1.2vw,2.2vh)}
+.cell span{font-size:min(1vw,1.9vh);color:var(--mut);font-weight:400}
+.num{font:500 12px "JetBrains Mono",monospace;color:var(--acc);margin-right:.5em}
+.big{font-weight:200;font-size:min(14vw,26vh);letter-spacing:-.06em;line-height:.85;color:var(--acc)}
+.tl{border-left:1px solid var(--ink);margin-top:1vh}
+.tl div{padding:1.2vh 0 1.2vh 1.4vw;position:relative;font-size:min(1.25vw,2.2vh);font-weight:400}
+.tl div:before{content:"";position:absolute;left:-4px;top:2vh;width:7px;height:7px;background:var(--acc)}
+.tl i{font:500 12px "JetBrains Mono",monospace;font-style:normal;color:var(--mut);display:inline-block;width:6.5em}
+input{font:500 min(2.4vw,4vh) "JetBrains Mono",monospace;border:0;border-bottom:1px solid var(--ink);background:transparent;width:6em;padding:.2em 0;outline:0;color:var(--ink)}
+.out{font:400 min(1.3vw,2.2vh) "JetBrains Mono",monospace;margin-top:1.6vh;line-height:1.8}
+.out b{color:var(--acc);font-weight:500}
+kbd{font:500 min(1vw,1.8vh) "JetBrains Mono",monospace;border:1px solid var(--ink);padding:.1em .45em;margin:.15em .3em .15em 0;display:inline-block}
+.hud{position:fixed;left:6vw;right:6vw;bottom:4vh;z-index:5;display:flex;align-items:center;gap:1.4vw;font:500 12px "JetBrains Mono",monospace}
+.bar{flex:1;height:1px;background:var(--line);position:relative}.bar i{position:absolute;left:0;top:-1px;height:3px;background:var(--acc);transition:width .5s}
+.hud button{all:unset;cursor:pointer;width:34px;height:34px;border:1px solid var(--ink);display:grid;place-items:center;transition:.2s}
+.hud button:hover{background:var(--ink);color:var(--bg)}
+.brand{position:fixed;top:3.5vh;left:6vw;z-index:5;font:500 12px "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase}
+.brand:before{content:"";display:inline-block;width:8px;height:8px;background:var(--acc);margin-right:10px}
+@media(max-width:800px){#gl{opacity:.35}.slide>*{max-width:100%}.slide{padding-top:10vh}h1{font-size:15vw}h2{font-size:9vw}p{font-size:15px}p.lead{font-size:18px}.cell b{font-size:14px}.cell span{font-size:12px}.tl div{font-size:14px}.grid.g3{grid-template-columns:1fr 1fr}.out{font-size:13px}input{font-size:24px}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="brand">Семинар / Информатика</div>
+
+<main class="deck" id="deck">
+
+<section class="slide" data-scene="cover">
+ <div class="k">Семинар · 3 темы</div>
+ <h1>Информа&shy;тика<br><em>от бита</em><br>до Windows</h1>
+ <p class="lead" style="margin-top:4vh">Фундаментальная наука · Архитектура компьютеров · Программное обеспечение</p>
+ <p style="color:var(--mut)">Навигация: <kbd>←</kbd><kbd>→</kbd> или свайп. Фигуры справа можно крутить мышью.</p>
+</section>
+
+<section class="slide" data-scene="cover">
+ <div class="k">01 · Информатика как фундаментальная наука</div>
+ <h2>информация <em>+</em> автоматика</h2>
+ <p class="lead">Так образован термин «информатика» (Informatics): наука об автоматизации информационных процессов средствами компьютерной техники.</p>
+ <div class="tl">
+  <div><i>древность</i>счёты (абак) — первые счётные инструменты</div>
+  <div><i>40–50-е XX в.</i>первые ЭВМ на электронных лампах</div>
+  <div><i>1970–80-е</i>микропроцессоры → персональные компьютеры</div>
+  <div><i>с 1990-х</i>глобальные сети, Интернет</div>
+ </div>
+</section>
+
+<section class="slide" data-scene="cover">
+ <div class="k">Предмет и задачи</div>
+ <h2>Почему это <em>фундаментальная</em> наука</h2>
+ <div class="grid g3">
+  <div class="cell"><b><span class="num">01</span>Свой предмет</b><span>информация и информационные процессы</span></div>
+  <div class="cell"><b><span class="num">02</span>Теория</b><span>теория информации, алгоритмов, математическая логика</span></div>
+  <div class="cell"><b><span class="num">03</span>Практика</b><span>программирование, базы данных, сети, ИБ</span></div>
+ </div>
+ <p style="margin-top:3vh">Двойственный характер: общие закономерности и теоретические пределы вычислений — и прикладные системы в управлении, экономике, медицине, образовании.</p>
+</section>
+
+<section class="slide" data-scene="cover">
+ <div class="k">Информация · данные · процессы</div>
+ <h2>Шесть свойств <em>информации</em></h2>
+ <div class="grid g3">
+  <div class="cell"><b>Точность</b><span>близость к реальному параметру</span></div>
+  <div class="cell"><b>Достоверность</b><span>отражение реального объекта</span></div>
+  <div class="cell"><b>Значимость</b><span>применимость в разных сферах</span></div>
+  <div class="cell"><b>Полнота</b><span>достаточно для решения</span></div>
+  <div class="cell"><b>Ценность</b><span>важность для задачи</span></div>
+  <div class="cell"><b>Своевременность</b><span>не раньше и не позже срока</span></div>
+ </div>
+ <p style="margin-top:3vh">Информационные процессы: <b>сбор → передача → хранение → обработка → доведение до пользователя</b>.</p>
+</section>
+
+<section class="slide" data-scene="tower">
+ <div class="k">Единицы измерения</div>
+ <h2>Всё — это <em>биты</em></h2>
+ <p>Бит (Binary digiT) — минимальная единица. 1 байт = 8 бит. Каждая ступень башни справа ×1024 (2¹⁰): Кб → Мб → Гб → Тб → Пб → Эб → Зб.</p>
+ <p style="margin-bottom:.5vh;color:var(--mut)">Введите число — увидите, как его хранит компьютер:</p>
+ <input id="num" type="number" min="0" value="2026">
+ <div class="out" id="out"></div>
+</section>
+
+<section class="slide" data-scene="cover">
+ <div class="k">Структура информатики</div>
+ <h2>Восемь <em>направлений</em></h2>
+ <div class="grid">
+  <div class="cell"><b>Теоретическая информатика</b><span>алгоритмы, вычислимость, сложность</span></div>
+  <div class="cell"><b>Программное обеспечение</b><span>языки, ОС, компиляторы</span></div>
+  <div class="cell"><b>Аппаратное обеспечение</b><span>процессор, память, ввод-вывод</span></div>
+  <div class="cell"><b>Базы данных</b><span>СУБД и информационные системы</span></div>
+  <div class="cell"><b>Сети и телекоммуникации</b><span>передача информации</span></div>
+  <div class="cell"><b>Искусственный интеллект</b><span>обучение и знания</span></div>
+  <div class="cell"><b>Информационная безопасность</b><span>защита данных</span></div>
+  <div class="cell"><b>Человек и компьютер · Анализ данных</b><span>интерфейсы и визуализация</span></div>
+ </div>
+ <p style="margin-top:2.5vh">Тренды: большие данные (3V — объём, скорость, разнообразие), облака (IaaS · PaaS · SaaS), ИИ, интернет вещей.</p>
+</section>
+
+<section class="slide" data-scene="gens">
+ <div class="k">02 · Архитектура компьютеров</div>
+ <h2>Пять <em>поколений</em></h2>
+ <div class="tl">
+  <div><i>1830</i>Бэббидж — аналитическая машина с программой</div>
+  <div><i>I · 1950–59</i>электронные лампы — низкая надёжность</div>
+  <div><i>II · 1960–69</i>полупроводники</div>
+  <div><i>III · 1970–85</i>интегральные схемы, IBM 360/370, ЕС ЭВМ</div>
+  <div><i>IV · с 1985</i>БИС и СБИС, персональные компьютеры</div>
+  <div><i>V · будущее</i>базы знаний, речь и зрение, нейрокомпьютеры</div>
+ </div>
+</section>
+
+<section class="slide" data-scene="neumann">
+ <div class="k">Классическая схема</div>
+ <h2>Принципы <em>фон Неймана</em></h2>
+ <div class="grid">
+  <div class="cell"><b><span class="num">01</span>Программное управление</b><span>для работы нужна программа</span></div>
+  <div class="cell"><b><span class="num">02</span>Единая память</b><span>линейная, адресуемая; в ней и программа, и данные</span></div>
+  <div class="cell"><b><span class="num">03</span>Команды как данные</b><span>явного различия между ними нет</span></div>
+  <div class="cell"><b><span class="num">04</span>Тип — на уровне ПО</b><span>число или строка — решает программа</span></div>
+ </div>
+ <p style="margin-top:2.5vh">Синие пакеты справа — данные и команды между процессором, памятью и устройствами.</p>
+</section>
+
+<section class="slide" data-scene="neumann">
+ <div class="k">Состав компьютера</div>
+ <h2>Центр и <em>периферия</em></h2>
+ <div class="grid">
+  <div class="cell"><b>Процессор: АЛУ + УУ</b><span>вычисляет и управляет работой</span></div>
+  <div class="cell"><b>Внутренняя память</b><span>оперативная (ОП) и постоянная (ПП)</span></div>
+  <div class="cell"><b>Внешняя память</b><span>прямой доступ — диски, флеш; последовательный — лента</span></div>
+  <div class="cell"><b>Ввод-вывод</b><span>связь пользователя и машины</span></div>
+  <div class="cell"><b>Системный интерфейс</b><span>обмен между устройствами</span></div>
+  <div class="cell"><b>Контроллеры и драйверы</b><span>управление внешними устройствами</span></div>
+ </div>
+</section>
+
+<section class="slide" data-scene="layers">
+ <div class="k">03 · Аппаратное и программное обеспечение</div>
+ <h2>Железо <em>и</em> софт</h2>
+ <p class="lead">Компьютерная система = Hardware + Software. ПО делится на три части:</p>
+ <div class="grid g3">
+  <div class="cell"><b>Системное</b><span>среда для программ</span></div>
+  <div class="cell"><b>Прикладное</b><span>задачи пользователя</span></div>
+  <div class="cell"><b>Инструментальное</b><span>создание программ</span></div>
+ </div>
+</section>
+
+<section class="slide" data-scene="layers">
+ <div class="k">Системное ПО</div>
+ <h2>Четыре <em>слоя</em> системы</h2>
+ <div class="grid">
+  <div class="cell"><b>Операционные системы</b><span>однозадачные (MS DOS), многозадачные (UNIX, Windows), сетевые (Novell NetWare, Windows NT)</span></div>
+  <div class="cell"><b>Техническое обслуживание</b><span>тесты и контроль работы</span></div>
+  <div class="cell"><b>Сервисные программы</b><span>оболочки, утилиты, антивирусы</span></div>
+  <div class="cell"><b>Системы программирования</b><span>языки и трансляторы</span></div>
+ </div>
+ <p style="margin-top:2.5vh">Антивирусы: фильтры, детекторы, доктора, ревизоры, иммунизаторы.</p>
+</section>
+
+<section class="slide" data-scene="layers">
+ <div class="k">Прикладное ПО и Windows</div>
+ <h2>Пакеты <em>и</em> горячие клавиши</h2>
+ <p>ППП: общего назначения (редакторы, таблицы, СУБД), методо- и проблемно-ориентированные, для сетей, для организации вычислений.</p>
+ <div>
+  <kbd>Ctrl+C</kbd> копировать <kbd>Ctrl+V</kbd> вставить <kbd>Ctrl+X</kbd> вырезать <kbd>Ctrl+Z</kbd> отмена<br>
+  <kbd>Ctrl+S</kbd> сохранить <kbd>Ctrl+F</kbd> поиск <kbd>Win+E</kbd> Проводник <kbd>F2</kbd> переименовать
+ </div>
+ <p style="margin-top:2vh">Файлы по расширениям: .docx · .xlsx · .jpg · .mp3 · .zip · .exe · .pdf</p>
+</section>
+
+<section class="slide" data-scene="cover">
+ <div class="k">Итоги</div>
+ <h2>Бит → Процессор → <em>ОС</em></h2>
+ <p class="lead">Информатика даёт теорию, архитектура — машину, программное обеспечение — жизнь внутри неё.</p>
+ <p style="color:var(--mut)">Спасибо. Вопросы?</p>
+</section>
+
+</main>
+
+<div class="hud"><button id="pv">←</button><span id="cnt">01</span><div class="bar"><i id="pg"></i></div><button id="nx">→</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const slides=[...document.querySelectorAll('.slide')];let idx=0;
+const BG=0xf3f3ef,INK=0x0b0b0b,ACC=0x1536d6;
+const cv=document.getElementById('gl');
+const R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(38,1,.1,100);C.position.z=11;
+function solid(g,fill=BG,edge=INK){const o=new THREE.Group();
+ o.add(new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:fill,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1})));
+ o.add(new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:edge})));return o}
+const G={};function grp(n){G[n]=new THREE.Group();G[n].scale.setScalar(.001);S.add(G[n]);return G[n]}
+
+// cover: wire icosahedron + point cloud
+{const g=grp('cover');
+ const ic=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.3,1)),new THREE.LineBasicMaterial({color:ACC}));g.add(ic);
+ g.add(solid(new THREE.OctahedronGeometry(1,0),BG,INK));
+ const n=700,p=new Float32Array(n*3);
+ for(let i=0;i<n;i++){const u=Math.random()*2-1,t=Math.random()*6.283,r=3.4+Math.random()*.6,s=Math.sqrt(1-u*u);p[i*3]=r*s*Math.cos(t);p[i*3+1]=r*u;p[i*3+2]=r*s*Math.sin(t)}
+ const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(p,3));
+ const pts=new THREE.Points(pg,new THREE.PointsMaterial({color:INK,size:.045}));g.add(pts);
+ g.userData.tick=t=>{ic.rotation.x=t*.2;pts.rotation.y=-t*.05;g.children[1].rotation.y=t*.5}}
+
+// tower of 1024
+{const g=grp('tower'),b=[];
+ for(let i=0;i<7;i++){const h=.4+i*.62,m=solid(new THREE.BoxGeometry(.8,h,.8),i==6?ACC:BG,i==6?ACC:INK);m.position.set(-3+i,-2.2+h/2,0);g.add(m);b.push(m)}
+ g.userData.tick=t=>{b.forEach((m,i)=>m.position.z=Math.sin(t+i*.5)*.25)}}
+
+// gens
+{const g=grp('gens'),geo=[new THREE.SphereGeometry(.75,14,10),new THREE.CylinderGeometry(.35,.35,1.3,6),new THREE.BoxGeometry(1.5,.15,1.5),new THREE.BoxGeometry(1.2,.3,1.2),new THREE.TorusKnotGeometry(.5,.16,70,8)];
+ geo.forEach((e,i)=>{const m=solid(e,i==4?ACC:BG,i==4?ACC:INK);m.position.set(-3.6+i*1.8,(i%2?.9:-.9),0);m.scale.setScalar(.85);g.add(m)})
+ g.userData.tick=t=>g.children.forEach((m,i)=>{m.rotation.y=t*.6+i;m.rotation.x=.4+Math.sin(t+i)*.2})}
+
+// von Neumann
+{const g=grp('neumann');
+ const N={cpu:[0,0,0],ram:[-3,1.8,0],io:[3,1.8,0],disk:[-3,-1.8,0],out:[3,-1.8,0]};
+ const pk=[];
+ Object.entries(N).forEach(([k,v])=>{const big=k=='cpu';const m=solid(new THREE.BoxGeometry(big?1.8:1.1,big?1.8:.9,big?1.8:.9),big?ACC:BG,big?ACC:INK);m.position.set(...v);g.add(m);m.userData.k=k;
+  if(!big){const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...v),new THREE.Vector3(0,0,0)]),new THREE.LineBasicMaterial({color:INK}));g.add(l);
+   for(let j=0;j<3;j++){const s=new THREE.Mesh(new THREE.SphereGeometry(.09),new THREE.MeshBasicMaterial({color:ACC}));g.add(s);pk.push({s,a:new THREE.Vector3(...v),o:j/3,d:j%2})}}});
+ g.userData.tick=t=>{pk.forEach(q=>{let f=(t*.35+q.o)%1;if(q.d)f=1-f;q.s.position.lerpVectors(q.a,new THREE.Vector3(),f)});g.rotation.x=.25}}
+
+// software layers
+{const g=grp('layers'),p=[];
+ for(let i=0;i<4;i++){const m=solid(new THREE.BoxGeometry(3.6,.2,3.6),i==3?ACC:BG,i==3?ACC:INK);g.add(m);p.push(m)}
+ for(let i=0;i<3;i++){const c=solid(new THREE.BoxGeometry(.7,.7,.7),BG,INK);c.userData.top=1;g.add(c);p.push(c)}
+ g.userData.tick=t=>{const e=1.05+Math.sin(t*.8)*.35;p.slice(0,4).forEach((m,i)=>m.position.y=(i-1.5)*e);
+  p.slice(4).forEach((c,i)=>{c.position.set((i-1)*1.1,1.5*e+.55+Math.sin(t*2+i)*.1,0);c.rotation.y=t+i})
+  g.rotation.x=.45;g.rotation.y=t*.25}}
+
+// interaction
+let mx=0,my=0,drag=false,lx=0,ly=0,rx=0,ry=0;
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;if(drag){ry+=(e.clientX-lx)*.01;rx+=(e.clientY-ly)*.01;lx=e.clientX;ly=e.clientY}});
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY});
+addEventListener('pointerup',()=>drag=false);
+function size(){R.setSize(innerWidth,innerHeight,false);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();
+ const w=innerWidth>800;Object.values(G).forEach(g=>{g.position.set(w?2.9:0,w?0:2.2,0)});S.userData.base=w?1:.7}
+addEventListener('resize',size);size();
+let cur='cover';
+function frame(ms){const t=ms/1000;requestAnimationFrame(frame);
+ for(const k in G){const g=G[k],tg=k==cur?(S.userData.base||1):.001;const s=g.scale.x+(tg-g.scale.x)*.08;g.scale.setScalar(Math.max(s,.001));g.visible=s>.01;
+  if(g.visible){g.userData.tick&&g.userData.tick(t);if(k!='layers'){g.rotation.y=t*.12+mx*.8+ry;if(k!='neumann')g.rotation.x=my*.5+rx}}}
+ R.render(S,C)}
+requestAnimationFrame(frame);
+
+// slides
+function go(n){idx=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('on',i==idx));
+ cur=slides[idx].dataset.scene;
+ document.getElementById('cnt').textContent=String(idx+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+ document.getElementById('pg').style.width=(idx+1)/slides.length*100+'%';history.replaceState(null,'','#'+(idx+1))}
+addEventListener('keydown',e=>{if(e.target.tagName=='INPUT')return;
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(idx+1)}
+ if(['ArrowLeft','PageUp'].includes(e.key))go(idx-1);if(e.key=='Home')go(0);if(e.key=='End')go(99)});
+document.getElementById('nx').onclick=()=>go(idx+1);document.getElementById('pv').onclick=()=>go(idx-1);
+let sx=0;addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>60)go(idx+(d<0?1:-1))});
+addEventListener('wheel',(()=>{let l=0;return e=>{const n=Date.now();if(n-l<700||e.target.tagName=='INPUT')return;if(Math.abs(e.deltaY)>30){l=n;go(idx+(e.deltaY>0?1:-1))}}})(),{passive:true});
+
+// binary converter
+const inp=document.getElementById('num'),out=document.getElementById('out');
+function conv(){const v=Math.max(0,parseInt(inp.value)||0);out.innerHTML='2 → <b>'+v.toString(2)+'</b><br>8 → <b>'+v.toString(8)+'</b><br>16 → <b>'+v.toString(16).toUpperCase()+'</b><br>бит: <b>'+(v.toString(2).length)+'</b>'}
+inp.oninput=conv;conv();
+go((parseInt(location.hash.slice(1))||1)-1);
+})();
+</script>
+</body>
+</html>
